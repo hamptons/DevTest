@@ -43,32 +43,35 @@ namespace DevTest
             var da = new DictionaryAnalyser();
             var result = da.Analyse(dictionaryFile, startWord.ToLower(), endWord.ToLower(), resultFile);
 
-            Console.WriteLine("The shortest route is " + (result.Length - 1) + " steps." );
-            Console.WriteLine("");
-
-            using (StreamWriter writer = new StreamWriter(resultFile))
+            if (result != null)
             {
-                try
+                Console.WriteLine("The shortest route is " + (result.Length - 1) + " steps.");
+                Console.WriteLine("");
+
+                using (StreamWriter writer = new StreamWriter(resultFile))
                 {
-                    for (int i = 0; i < result.Length; i++)
+                    try
                     {
-                        writer.WriteLine(result[i]);
+                        for (int i = 0; i < result.Length; i++)
+                        {
+                            writer.WriteLine(result[i]);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Unable to write to result file.");
+                    }
+                    finally
+                    {
+                        writer.Close();
                     }
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unable to write to result file.");
-                }
-                finally
-                {
-                    writer.Close();
-                }
+
+                Console.WriteLine("");
+                Console.WriteLine("See " + resultFile + " for results.");
             }
             
-            Console.WriteLine("");
-            Console.WriteLine("See " + resultFile + " for results.");
             Console.ReadKey();
-           
         }
     }
 }

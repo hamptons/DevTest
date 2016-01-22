@@ -20,12 +20,12 @@ namespace DevTest
             //check words are in the dictionary
             if (!initialFourLetterWordList.Contains(startWord))
             {
-                string.Format("{0} is not in the dictionary.", startWord);
+                Console.WriteLine(startWord + " is not in the dictionary.");
             }
 
             if (!initialFourLetterWordList.Contains(endWord))
             {
-                string.Format("{0} is not in the dictionary.", startWord);
+                Console.WriteLine(endWord + " is not in the dictionary.");
             }
 
             resultPath = rf.FindRoute(initialFourLetterWordList, startWord, endWord);

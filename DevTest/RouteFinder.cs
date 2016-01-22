@@ -4,90 +4,105 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace DevTest
 {
     class RouteFinder
     {
         List<string> dictionaryWords = new List<string>();
-        List<Stack<string>> visitedPaths = new List<Stack<string>>();
-        Stack<string> currentPath = new Stack<string>();
-        Stack<string> path = new Stack<string>();
-
+        Dictionary<string, string> visitedWordsDictionary = new Dictionary<string, string>();
+        Queue<string> q = new Queue<string>();
         string currentWord;
-        string nextWord;
-        int steps = 0;
-        int shortestPath = 10000;
+        string root;
+        bool firstWord = true;
+        string p = "";
 
         public string[] FindRoute(List<string> wordList, string startWord, string endWord)
         { 
             dictionaryWords = wordList;
-            var finalPath = RecursiveWordSearch(startWord, endWord);
-            var finalArray = new string[finalPath.Count];
-            //add words to array and reverse
-            finalPath.CopyTo(finalArray, 0);
-            Array.Reverse(finalArray);
-            return finalArray;
+            var finalPath = RecursiveWordSearch("", startWord, endWord);
+            try
+            {
+                var finalArray = new string[finalPath.Count];
+                //add words to array and return
+                finalPath.CopyTo(finalArray, 0);
+                return finalArray;
+            }
+            catch (NullReferenceException e)
+            {
+                Console.WriteLine("");
+                var result = string.Format("There is no valid route from {0} to {1}.", startWord, endWord);
+                Console.WriteLine(result);
+                return null;
+            }
+            
         }
 
-        public Stack<string> RecursiveWordSearch(string startWord, string endWord)
+        public List<string> RecursiveWordSearch(string parentWord, string startWord, string endWord)
         {
-                currentWord = startWord;
+           
+            var parent = parentWord;
+            currentWord = startWord;
+            
+            if (firstWord)
+            {
+                root = currentWord;
+                visitedWordsDictionary.Add(currentWord, parent);
+                q.Enqueue(currentWord);
+                firstWord = false;
+            }
 
-                if (!currentPath.Contains(currentWord))
+            if (currentWord == endWord)
+            {
+                return calculatePathFromDictionary();
+            }
+
+            if (q.Count > 0)
+            {
+                var nextWordsList = FindNextWords(currentWord);
+                for (int i = 0; i < nextWordsList.Count; i++)
                 {
-                    currentPath.Push(currentWord);
-                    steps++;
+                    visitedWordsDictionary.Add(nextWordsList[i], currentWord);
+                    q.Enqueue(nextWordsList[i]);
+                }
+            }
+
+            q.Dequeue();
+
+            if (q.Count < 1)
+            {
+                return null;
+            }
+            else
+            {
+                string value;
+                if (visitedWordsDictionary.TryGetValue(q.Peek(), out value))
+                {
+                    p = value;
                 }
 
-                var nextWordsQueue = FindNextWords(currentWord);
+                return RecursiveWordSearch(p, q.Peek(), endWord);
+            }
+        }  
+        
 
-                if (nextWordsQueue.Count > 0 && (currentPath.Count < shortestPath))
-                {
-                    if ((nextWordsQueue.Contains(endWord)))
-                    {
-                        currentPath.Push(endWord);
-                        path = new Stack<string>(new Stack<string>(currentPath));
-                        shortestPath = path.Count;
-                    }
-                    else if (currentPath.Count > 0)
-                    {
-                        nextWord = nextWordsQueue.Dequeue();
-                        return RecursiveWordSearch(nextWord, endWord);
-                    }
-                }
-
-                var visitedPath = new Stack<string>(new Stack<string>(currentPath));
-                visitedPaths.Add(visitedPath);
-                currentPath.Pop();
-                steps--;
-
-                if (currentPath.Count > 0)
-                {
-                    return RecursiveWordSearch(currentPath.Peek(), endWord);
-                }
-                else
-                {
-                    return path;
-                }
-           }
-
-        public Queue<string> FindNextWords(string word)
+        public List<string> FindNextWords(string word)
         {
-            var nextWordsQueue = new Queue<string>();
+            var nextWordsList = new List<string>();
 
             for (int x = 0; x < word.Length; x++)
             {
                 for (int y = 'a'; y <= 'z'; y++)
                 {
                     string z = word.Substring(0, x) + (char)y + word.Substring(x + 1, (word.Length) - (x + 1));
-                    if (WordExists(z) && !z.Equals(word) && !currentPath.Contains(z) && !NextPathAlreadyVisited(currentPath, z))
+                    if (WordExists(z) && (!z.Equals(word)) && (!visitedWordsDictionary.ContainsKey(z)) && (!q.Contains(z)) )
                     {
-                        nextWordsQueue.Enqueue(z);
+                        nextWordsList.Add(z);
                     }
                 }
             }
-            
-            return nextWordsQueue;
+
+            return nextWordsList;
         }
 
         public bool WordExists(string word)
@@ -95,23 +110,59 @@ namespace DevTest
             return dictionaryWords.Contains(word);
         }
 
-        public bool NextPathAlreadyVisited(Stack<string> path, string potentialNextWord)
+
+        public string GetClosestWord(List<string> nextWords, string endWord)
         {
-            var newStack = new Stack<string>(new Stack<string>(currentPath));
-            newStack.Push(potentialNextWord);
+            var dictionary = new Dictionary<string, int>();
 
-            var array1 = newStack.ToArray();
-
-            foreach (Stack<string> element in visitedPaths)
+            foreach (string s in nextWords)
             {
-                var array2 = element.ToArray();
-                if (array1.SequenceEqual(array2))
-                {
-                    return true;
-                }
+                var distance = CalculateHammingDistance(s, endWord);
+                dictionary.Add(s, distance);
             }
 
-            return false;
+            List<KeyValuePair<string, int>> sortedDictionary = (from kv in dictionary orderby kv.Value select kv).ToList();
+
+            var nextWord = sortedDictionary.First().Key;
+
+            return nextWord;
+        }
+
+        public int CalculateHammingDistance(string w1, string w2)
+        {
+            var distance = 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                var difference = ((int)w1[i] - (int)w2[i]);                
+
+                if (difference < 0)
+                {
+                    difference = difference * -1;
+                }
+                
+                distance += difference;
+            }
+
+                return distance;
+        }
+
+        public List<string> calculatePathFromDictionary()
+        {
+            var path = new List<string>();
+            var w = currentWord;
+            string value;
+
+            while (!string.IsNullOrEmpty(w))
+            {
+                path.Add(w);
+                if (visitedWordsDictionary.TryGetValue(w, out value))
+                {
+                    w = value;
+                }
+            }
+            path.Reverse();
+            return path;
         }
     }
 }
