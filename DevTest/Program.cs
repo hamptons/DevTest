@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevTest
 {
@@ -18,13 +15,13 @@ namespace DevTest
 
             Console.WriteLine("*** Word Test ***");
 
-            //Get the startWord
+            //Set the startWord
             Console.WriteLine("Enter word 1:");
             startWord = Console.ReadLine();
 
             Console.WriteLine("");
 
-            //Get the endword
+            //Set the endword
             Console.WriteLine("Enter word 2:");
             endWord = Console.ReadLine();
 
@@ -34,10 +31,10 @@ namespace DevTest
             Console.WriteLine("Calculating shortest route...");
             Console.WriteLine("");
 
-            //Get the dictionary file
+            //Set the dictionary file
             dictionaryFile = @"words-english.txt";
 
-            //Get the result file
+            //Set the result file
             resultFile = @"ResultFile.txt";
 
             var da = new DictionaryAnalyser();

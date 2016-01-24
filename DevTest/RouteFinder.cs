@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DevTest
 {
-    class RouteFinder
+    public class RouteFinder
     {
         List<string> dictionaryWords = new List<string>();
         Dictionary<string, string> visitedWordsDictionary = new Dictionary<string, string>();

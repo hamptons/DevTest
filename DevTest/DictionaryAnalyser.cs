@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DevTest
 {
-    class DictionaryAnalyser
+    public class DictionaryAnalyser
     {
         public string[] Analyse(string dictionaryFile, string startWord, string endWord, string resultFile)
         {
