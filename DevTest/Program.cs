@@ -8,67 +8,104 @@ namespace DevTest
     {
         static void Main(string[] args)
         {
-            string startWord;
-            string endWord;
-            string dictionaryFile;
-            string resultFile;
+            var cont = true;
 
-            Console.WriteLine("*** Word Test ***");
-
-            //Set the startWord
-            Console.WriteLine("Enter word 1:");
-            startWord = Console.ReadLine();
-
-            Console.WriteLine("");
-
-            //Set the endword
-            Console.WriteLine("Enter word 2:");
-            endWord = Console.ReadLine();
-
-            Console.WriteLine("");
-            Console.WriteLine(startWord + " ---> " + endWord);
-            Console.WriteLine("");
-            Console.WriteLine("Calculating shortest route...");
-            Console.WriteLine("");
-
-            //Set the dictionary file
-            dictionaryFile = @"words-english.txt";
-
-            //Set the result file
-            resultFile = @"ResultFile.txt";
-
-            var da = new DictionaryAnalyser();
-            var result = da.Analyse(dictionaryFile, startWord.ToLower(), endWord.ToLower(), resultFile);
-
-            if (result != null)
+            while (cont)
             {
-                Console.WriteLine("The shortest route is " + (result.Length - 1) + " steps.");
+                string startWord;
+                string endWord;
+                string dictionaryFile;
+                string resultFile;
+
+                Console.Clear();
+                Console.WriteLine("*** Word Test ***");
                 Console.WriteLine("");
 
-                using (StreamWriter writer = new StreamWriter(resultFile))
+                //Set the startWord
+                Console.WriteLine("Enter word 1:");
+                startWord = Console.ReadLine();
+
+                while (startWord.Length != 4)
                 {
-                    try
-                    {
-                        for (int i = 0; i < result.Length; i++)
-                        {
-                            writer.WriteLine(result[i]);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Unable to write to result file.");
-                    }
-                    finally
-                    {
-                        writer.Close();
-                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Please enter a 4 letter word.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("Enter word 1:");
+                    startWord = Console.ReadLine();
+                }
+
+                //Set the endWord
+                Console.WriteLine("Enter word 2:");
+                endWord = Console.ReadLine();
+
+                while (endWord.Length != 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Please enter a 4 letter word.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("Enter word 2:");
+                    endWord = Console.ReadLine();
                 }
 
                 Console.WriteLine("");
-                Console.WriteLine("See " + resultFile + " for results.");
+                Console.WriteLine(startWord + " ---> " + endWord);
+                Console.WriteLine("");
+                Console.WriteLine("Analysing dictionary file...");
+                Console.WriteLine("");
+
+                //Set the dictionary file
+                dictionaryFile = @"words-english.txt";
+
+                //Set the result file
+                resultFile = @"ResultFile.txt";
+
+                var da = new DictionaryAnalyser();
+
+                //get the path
+                var result = da.Analyse(dictionaryFile, startWord.ToLower(), endWord.ToLower(), resultFile);
+
+                if (result != null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("");
+                    Console.WriteLine("The shortest route is " + (result.Length - 1) + " steps.");
+
+                    using (StreamWriter writer = new StreamWriter(resultFile))
+                    {
+                        try
+                        {
+                            for (int i = 0; i < result.Length; i++)
+                            {
+                                writer.WriteLine(result[i]);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Unable to write to result file.");
+                        }
+                        finally
+                        {
+                            writer.Close();
+                        }
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("");
+                    Console.WriteLine("See " + resultFile + " for results.");
+                }
+
+                Console.WriteLine("");
+                Console.WriteLine("Press 'q' to quit or enter to restart");
+                var input = Console.ReadKey();
+
+                //break while loop if user enters 'q' or clear window and continue
+                if (input.KeyChar == 'q')
+                {
+                    cont = false;
+                }
+                
             }
-            
-            Console.ReadKey();
         }
     }
 }

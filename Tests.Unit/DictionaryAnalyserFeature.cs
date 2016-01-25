@@ -22,7 +22,7 @@ namespace Tests.Unit
                 .x(() => dictionaryFile = @"testWords.txt");
 
             "When I extract the non four letter words from the list"
-                .x(() => result = da.loadFourLetterWords(dictionaryFile));
+                .x(() => result = da.LoadFourLetterWords(dictionaryFile));
 
             "Then the resulting list contains '/tst', 'test', 'test'."
                 .x(() => Assert.Equal(expected, result));

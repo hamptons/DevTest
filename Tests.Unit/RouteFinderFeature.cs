@@ -13,22 +13,21 @@ namespace Tests.Unit
     public class RouteFinderFeature
     {
         [Scenario]
-        public void FindNextWords(string dictionaryFile, string word)
+        public void FindNextWords(RouteFinder rf, string word, List<string> result)
         { 
-            var expected = new string[] {"purl", "burl", "bury", "jury"};
-            var rf = new RouteFinder();
-            List<string> result;
+            var expected = new List<string> {"burl", "curl", "pure"};
 
             "Given a dictionary file"
-                .x(() => dictionaryFile = @"words-english.txt");
+                .x(() => rf = new RouteFinder(new List<string> { "purl", "curl", "burl", "burp", "curb", "pure", "jure", "fury", "jury", "bury" }));
 
-            "And a word of 'purl'"
+            "And the word 'purl'"
                 .x(() => word = "purl");
 
-            "When I find the words with one character different"
+            "When I find the words in the dictionary with one character different"
                 .x(() => result = rf.FindNextWords(word));
 
-            //todo
+            "Then the result should be burl, curl, pure"
+                .x(() => Assert.Equal(expected, result));
         }
     }
 }
