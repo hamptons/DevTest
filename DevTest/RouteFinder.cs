@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-namespace DevTest
+﻿namespace DevTest
 {
+    using System;
+    using System.Collections.Generic;
+
     public class RouteFinder
     {
         private readonly List<string> dictionaryWords;
@@ -15,27 +11,21 @@ namespace DevTest
         private string currentWord;
         private string root;
         private bool firstWord = true;
-        private string p = "";
+        
 
-        //create a new instance of routefinder and load the list of words
+        // create a new instance of routefinder and load the list of words
         public RouteFinder(List<string> dictionaryWords)
         {
             this.dictionaryWords = dictionaryWords;
         }
 
-        /// <summary>
-        /// Finds the quickest route between the given words, changing one character at a time.
-        /// </summary>
-        /// <param name="startWord"></param>
-        /// <param name="endWord"></param>
-        /// <returns>A string array containing the words which make up the path between the supplied words</returns>
         public string[] FindRoute(string startWord, string endWord)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Calculating shortest route...");
-            var finalPath = RecursiveWordSearch("", startWord, endWord);
+            var finalPath = this.RecursiveWordSearch(string.Empty, startWord, endWord);
 
-            //add words to array and return
+            // add words to array and return
             try
             {
                 var finalArray = new string[finalPath.Count];
@@ -44,7 +34,7 @@ namespace DevTest
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
                 Console.ForegroundColor = ConsoleColor.Red;
                 var result = string.Format("There is no valid route from {0} to {1}.", startWord, endWord);
                 Console.WriteLine(result);
@@ -54,81 +44,68 @@ namespace DevTest
             
         }
 
-        /// <summary>
-        /// Performs a breadth-first search for the supplied endWord from the startWord.
-        /// </summary>
-        /// <param name="parentWord"></param>
-        /// <param name="startWord"></param>
-        /// <param name="endWord"></param>
-        /// <returns>A list containing the words which make up the path between the supplied words</returns>
         public List<string> RecursiveWordSearch(string parentWord, string startWord, string endWord)
         {
-            //set currentWord and its parent
+            // set currentWord and its parent
             var parent = parentWord;
-            currentWord = startWord;
+            this.currentWord = startWord;
             
-            //if this is the first time the method has been invoked we need to set the currentWord to be the 
-            //root and add this to the queue
-            if (firstWord)
+            
+            // if this is the first time the method has been invoked we need to set the currentWord to be the 
+            // root and add this to the queue
+            if (this.firstWord)
             {
-                root = currentWord;
-                visitedWordsDictionary.Add(currentWord, parent);
-                q.Enqueue(currentWord);
-                firstWord = false;
+                this.root = this.currentWord;
+                this.visitedWordsDictionary.Add(this.currentWord, parent);
+                this.q.Enqueue(this.currentWord);
+                this.firstWord = false;
             }
 
-            //return the endword once found
-            if (currentWord == endWord)
+            // return the endword once found
+            if (this.currentWord == endWord)
             {
-                return CalculatePathFromDictionary();
+                return this.CalculatePathFromDictionary();
             }
 
-            //keep searching while there are still words in the queue and we haven't already found the endWord
-            if (q.Count > 0)
+            // keep searching while there are still words in the queue and we haven't already found the endWord
+            if (this.q.Count > 0)
             {
-                var nextWordsList = FindNextWords(currentWord);
-                for (int i = 0; i < nextWordsList.Count; i++)
+                var nextWordsList = this.FindNextWords(this.currentWord);
+                for (var i = 0; i < nextWordsList.Count; i++)
                 {
-                    visitedWordsDictionary.Add(nextWordsList[i], currentWord);
-                    q.Enqueue(nextWordsList[i]);
+                    this.visitedWordsDictionary.Add(nextWordsList[i], this.currentWord);
+                    this.q.Enqueue(nextWordsList[i]);
                 }
             }
 
-            q.Dequeue();
+            this.q.Dequeue();
 
-            if (q.Count < 1)
+            if (this.q.Count < 1)
             {
                 return null;
             }
-            else
-            {
-                string value;
-                if (visitedWordsDictionary.TryGetValue(q.Peek(), out value))
-                {
-                    p = value;
-                }
 
-                return RecursiveWordSearch(p, q.Peek(), endWord);
+            string value;
+            if (this.visitedWordsDictionary.TryGetValue(this.q.Peek(), out value))
+            {
+                parent = value;
             }
+
+            return this.RecursiveWordSearch(parent, this.q.Peek(), endWord);
         }  
         
-        /// <summary>
-        /// Finds all the words in dictionaryWords which are one character different to the supplied word.
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns>A list of valid words one character away from the supplied word</returns>
-        public List<string> FindNextWords(string word)
+        public List<string> FindNextWords(string currentWord)
         {
             var nextWordsList = new List<string>();
 
-            for (int x = 0; x < word.Length; x++)
+            for (var wordIndex = 0; wordIndex < currentWord.Length; wordIndex++)
             {
-                for (int y = 'a'; y <= 'z'; y++)
+                for (var letter = 'a'; letter <= 'z'; letter++)
                 {
-                    string z = word.Substring(0, x) + (char)y + word.Substring(x + 1, (word.Length) - (x + 1));
-                    if (dictionaryWords.Contains(z) && (!z.Equals(word)) && (!visitedWordsDictionary.ContainsKey(z)) && (!q.Contains(z)))
+                    var nextWord = currentWord.Substring(0, wordIndex) + (char)letter + currentWord.Substring(wordIndex + 1, (currentWord.Length) - (wordIndex + 1));
+                    if (this.dictionaryWords.Contains(nextWord) && (!nextWord.Equals(currentWord)) && (!this.visitedWordsDictionary.ContainsKey(nextWord)) && (!this.q.Contains(nextWord)))
                     {
-                        nextWordsList.Add(z);
+                        nextWordsList.Add(nextWord);
                     }
                 }
             }
@@ -136,25 +113,21 @@ namespace DevTest
             return nextWordsList;
         }
 
-        /// <summary>
-        /// Calculates the route from the endWord to the startWord from a dictionary of 
-        /// all of the visited words and their parents.
-        /// </summary>
-        /// <returns>A list containing the words which make up the path between the supplied words</returns>
         public List<string> CalculatePathFromDictionary()
         {
             var path = new List<string>();
-            var w = currentWord;
-            string value;
+            var word = this.currentWord;
 
-            while (!string.IsNullOrEmpty(w))
+            while (!string.IsNullOrEmpty(word))
             {
-                path.Add(w);
-                if (visitedWordsDictionary.TryGetValue(w, out value))
+                path.Add(word);
+                string value;
+                if (this.visitedWordsDictionary.TryGetValue(word, out value))
                 {
-                    w = value;
+                    word = value;
                 }
             }
+
             path.Reverse();
             return path;
         }

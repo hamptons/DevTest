@@ -5,3 +5,10 @@ C:\Source\Github\DevTest\DevTest\bin\Debug\DevTest.pdb
 C:\Source\Github\DevTest\DevTest\obj\Debug\DevTest.csprojResolveAssemblyReference.cache
 C:\Source\Github\DevTest\DevTest\obj\Debug\DevTest.exe
 C:\Source\Github\DevTest\DevTest\obj\Debug\DevTest.pdb
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\bin\Debug\DevTest.exe.config
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\obj\Debug\DevTest.exe
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\obj\Debug\DevTest.pdb
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\bin\Debug\words-english.txt
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\bin\Debug\DevTest.exe
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\bin\Debug\DevTest.pdb
+C:\Users\ayalay\AppData\Roaming\Skype\My Skype Received Files\DevTest(1)\DevTest\DevTest\obj\Debug\DevTest.csprojResolveAssemblyReference.cache

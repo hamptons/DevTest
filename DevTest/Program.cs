@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace DevTest
+﻿namespace DevTest
 {
+    using System;
+    using System.IO;
+
     class Program
     {
+
         static void Main(string[] args)
         {
             var cont = true;
 
             while (cont)
             {
-                string startWord;
-                string endWord;
-                string dictionaryFile;
-                string resultFile;
-
                 Console.Clear();
                 Console.WriteLine("*** Word Test ***");
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
 
-                //Set the startWord
+                // Set the startWord
                 Console.WriteLine("Enter word 1:");
-                startWord = Console.ReadLine();
+                string startWord = Console.ReadLine();
 
+                // we don't want to continue unless entered word is 4 characters
                 while (startWord.Length != 4)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -34,9 +30,9 @@ namespace DevTest
                     startWord = Console.ReadLine();
                 }
 
-                //Set the endWord
+                // Set the endWord
                 Console.WriteLine("Enter word 2:");
-                endWord = Console.ReadLine();
+                var endWord = Console.ReadLine();
 
                 while (endWord.Length != 4)
                 {
@@ -47,34 +43,34 @@ namespace DevTest
                     endWord = Console.ReadLine();
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
                 Console.WriteLine(startWord + " ---> " + endWord);
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
                 Console.WriteLine("Analysing dictionary file...");
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
 
-                //Set the dictionary file
-                dictionaryFile = @"words-english.txt";
+                // Set the dictionary file
+                const string DictionaryFile = @"words-english.txt";
 
-                //Set the result file
-                resultFile = @"ResultFile.txt";
+                // Set the result file
+                const string ResultFile = @"ResultFile.txt";
 
                 var da = new DictionaryAnalyser();
 
-                //get the path
-                var result = da.Analyse(dictionaryFile, startWord.ToLower(), endWord.ToLower(), resultFile);
+                // get the path
+                var result = da.Analyse(DictionaryFile, startWord.ToLower(), endWord.ToLower(), ResultFile);
 
                 if (result != null)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("");
+                    Console.WriteLine(string.Empty);
                     Console.WriteLine("The shortest route is " + (result.Length - 1) + " steps.");
 
-                    using (StreamWriter writer = new StreamWriter(resultFile))
+                    using (var writer = new StreamWriter(ResultFile))
                     {
                         try
                         {
-                            for (int i = 0; i < result.Length; i++)
+                            for (var i = 0; i < result.Length; i++)
                             {
                                 writer.WriteLine(result[i]);
                             }
@@ -91,20 +87,19 @@ namespace DevTest
                     }
 
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("");
-                    Console.WriteLine("See " + resultFile + " for results.");
+                    Console.WriteLine(string.Empty);
+                    Console.WriteLine("See " + ResultFile + " for results.");
                 }
 
-                Console.WriteLine("");
+                Console.WriteLine(string.Empty);
                 Console.WriteLine("Press 'q' to quit or enter to restart");
                 var input = Console.ReadKey();
 
-                //break while loop if user enters 'q' or clear window and continue
+                // break while loop if user enters 'q' or clear window and continue
                 if (input.KeyChar == 'q')
                 {
                     cont = false;
                 }
-                
             }
         }
     }

@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using DevTest;
-using Xbehave;
-using Xunit;
-
-namespace Tests.Unit
+﻿namespace Tests.Unit
 {
+    using System.Collections.Generic;
+
+    using DevTest;
+
+    using Xbehave;
+
+    using Xunit;
+
+    /// <summary>The dictionary analyser feature.</summary>
     public class DictionaryAnalyserFeature
     {
+        /// <summary>The load four letter words.</summary>
+        /// <param name="dictionaryFile">The dictionary file.</param>
+        /// <param name="da">The da.</param>
+        /// <param name="result">The result.</param>
         [Scenario]
-        public void loadFourLetterWords(string dictionaryFile, DictionaryAnalyser da, List<string> result)
+        public void LoadFourLetterWords(string dictionaryFile, DictionaryAnalyser da, List<string> result)
         {
             da = new DictionaryAnalyser();
             var expected = new List<string> { "/tst", "test", "test" };
@@ -27,6 +30,5 @@ namespace Tests.Unit
             "Then the resulting list contains '/tst', 'test', 'test'."
                 .x(() => Assert.Equal(expected, result));
         }
-
     }
 }
