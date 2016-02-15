@@ -30,8 +30,8 @@
             }
 
             // find the shortest route
-            var rf = new RouteFinder(initialFourLetterWordList);
-            var resultPath = rf.FindRoute(startWord, endWord);
+            var rf = new RouteFinder();
+            var resultPath = rf.FindRoute(startWord, endWord, initialFourLetterWordList);
 
             return resultPath;
         }
