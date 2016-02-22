@@ -36,9 +36,9 @@
             return resultPath;
         }
 
-        public List<string> LoadFourLetterWords(string dictionaryFile)
+        public HashSet<string> LoadFourLetterWords(string dictionaryFile)
         {
-            var fourLetterWordList = new List<string>();
+            var fourLetterWordList = new HashSet<string>();
 
             using (var reader = new StreamReader(dictionaryFile))
             {
@@ -51,7 +51,7 @@
                         if (line.Length == 4)
                         {
                             fourLetterWordList.Add(line.ToLower());
-                            fourLetterWordList.Sort();
+                            //fourLetterWordList.Sort();
                         }
                     }
                 }

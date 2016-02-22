@@ -6,11 +6,11 @@
     public class RouteFinder
     {    
 
-        public string[] FindRoute(string startWord, string endWord, List<string> wordList)
+        public string[] FindRoute(string startWord, string endWord, HashSet<string> wordList)
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Calculating shortest route...");
-            var finalPath = this.WordSearch(string.Empty, startWord, endWord, wordList);
+            var finalPath = this.WordSearch(startWord, endWord, wordList);
 
             // add words to array and return
             try
@@ -31,78 +31,128 @@
             
         }
 
-        public List<string> WordSearch(string parentWord, string startWord, string endWord, List<string> wordList)
+        public List<string> WordSearch(string startWord, string endWord, HashSet<string> wordList)
         {
             // set currentWord and its parent
-            var parent = parentWord;
+            var parent = "";
             var currentWord = startWord;
             var q = new Queue<string>();
             var firstWord = true;
             var visitedWordsDictionary = new Dictionary<string, string>();
             var dictionaryWords = wordList;
-            var root = "";
+           // var root = "";
             
             // if this is the first time the method has been invoked we need to set the currentWord to be the 
             // root and add this to the queue
             if (firstWord)
             {
-                root = currentWord;
+                //root = currentWord;
                 visitedWordsDictionary.Add(currentWord, parent);
                 q.Enqueue(currentWord);
+                dictionaryWords.Remove(currentWord);
                 firstWord = false;
             }
 
             // return the endword once found
-            if (currentWord == endWord)
+            while (currentWord != endWord)
             {
-                return this.CalculatePathFromDictionary(currentWord, visitedWordsDictionary);
-            }
-
-            // keep searching while there are still words in the queue and we haven't already found the endWord
-            if (q.Count > 0)
-            {
-                var nextWordsList = FindNextWords(currentWord, dictionaryWords, visitedWordsDictionary, q);
-                for (var i = 0; i < nextWordsList.Count; i++)
+                // keep searching while there are still words in the queue and we haven't already found the endWord
+                if (q.Count > 0)
                 {
-                    visitedWordsDictionary.Add(nextWordsList[i], currentWord);
-                    q.Enqueue(nextWordsList[i]);
+                    var nextWordsList = FindNextWords(currentWord, dictionaryWords, visitedWordsDictionary, q);
+                    for (var i = 0; i < nextWordsList.Count; i++)
+                    {
+                        var nextWord = nextWordsList[i];
+                        visitedWordsDictionary.Add(nextWord, currentWord);
+                        q.Enqueue(nextWord);
+                        dictionaryWords.Remove(nextWord);
+                    }
                 }
+
+                q.Dequeue();
+
+                if (q.Count < 1)
+                {
+                    return null;
+                }
+
+                //string value;
+                //if (visitedWordsDictionary.TryGetValue(q.Peek(), out value))
+                //{
+                //    parent = value;
+                //}
+
+                //return WordSearch(parent, q.Peek(), endWord, dictionaryWords);
+                currentWord = q.Peek();
             }
+                       
 
-            q.Dequeue();
-
-            if (q.Count < 1)
-            {
-                return null;
-            }
-
-            string value;
-            if (visitedWordsDictionary.TryGetValue(q.Peek(), out value))
-            {
-                parent = value;
-            }
-
-            return WordSearch(parent, q.Peek(), endWord, dictionaryWords);
+            return this.CalculatePathFromDictionary(currentWord, visitedWordsDictionary);
         }
 
-        public List<string> FindNextWords(string currentWord, List<string> dictionaryWords, Dictionary<string, string> visitedWordsDictionary, Queue<string> q)
+        public List<string> FindNextWords(string currentWord, HashSet<string> dictionaryWords, Dictionary<string, string> visitedWordsDictionary, Queue<string> q)
         {
             var nextWordsList = new List<string>();
 
-            for (var wordIndex = 0; wordIndex < currentWord.Length; wordIndex++)
+            foreach (string word in dictionaryWords)
             {
-                for (var letter = 'a'; letter <= 'z'; letter++)
+                if (!word.Equals(currentWord) /*&& !visitedWordsDictionary.ContainsKey(word) && !q.Contains(word)*/)
                 {
-                    var nextWord = currentWord.Substring(0, wordIndex) + (char)letter + currentWord.Substring(wordIndex + 1, (currentWord.Length) - (wordIndex + 1));
-                    if (dictionaryWords.Contains(nextWord) && (!nextWord.Equals(currentWord)) && (!visitedWordsDictionary.ContainsKey(nextWord)) && (!q.Contains(nextWord)))
+                    var neighbouringWord = this.HasOneCharacterDifferent(currentWord, word);
+
+                    if (neighbouringWord)
                     {
-                        nextWordsList.Add(nextWord);
+                        nextWordsList.Add(word);
                     }
                 }
             }
 
             return nextWordsList;
         }
+
+        public bool HasOneCharacterDifferent(string word1, string word2)
+        {
+            var count = 0;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (count > 1)
+                {
+                    return false;
+                }
+
+                if (!(word1.Substring(i, 1)).Equals(word2.Substring(i, 1)))
+                {
+                    count++;
+                }
+            }
+
+            if (count == 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //public List<string> FindNextWords(string currentWord, List<string> dictionaryWords, Dictionary<string, string> visitedWordsDictionary, Queue<string> q)
+        //{
+        //    var nextWordsList = new List<string>();
+
+        //    for (var wordIndex = 0; wordIndex < currentWord.Length; wordIndex++)
+        //    {
+        //        for (var letter = 'a'; letter <= 'z'; letter++)
+        //        {
+        //            var nextWord = currentWord.Substring(0, wordIndex) + (char)letter + currentWord.Substring(wordIndex + 1, (currentWord.Length) - (wordIndex + 1));
+        //            if (dictionaryWords.Contains(nextWord) && (!nextWord.Equals(currentWord)) && (!visitedWordsDictionary.ContainsKey(nextWord)) && (!q.Contains(nextWord)))
+        //            {
+        //                nextWordsList.Add(nextWord);
+        //            }
+        //        }
+        //    }
+
+        //    return nextWordsList;
+        //}
 
         public List<string> CalculatePathFromDictionary(string currentWord, Dictionary<string, string> visitedWordsDictionary)
         {
