@@ -50,8 +50,7 @@
                         // get four letter words
                         if (line.Length == 4)
                         {
-                            fourLetterWordList.Add(line.ToLower());
-                            //fourLetterWordList.Sort();
+                            fourLetterWordList.Add(line);
                         }
                     }
                 }

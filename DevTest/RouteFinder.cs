@@ -10,6 +10,7 @@
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Calculating shortest route...");
+
             var finalPath = this.WordSearch(startWord, endWord, wordList);
 
             // add words to array and return
@@ -40,20 +41,17 @@
             var firstWord = true;
             var visitedWordsDictionary = new Dictionary<string, string>();
             var dictionaryWords = wordList;
-           // var root = "";
             
-            // if this is the first time the method has been invoked we need to set the currentWord to be the 
-            // root and add this to the queue
+            // if this is the first time the method has been invoked we need to add the current word to the queue
             if (firstWord)
             {
-                //root = currentWord;
                 visitedWordsDictionary.Add(currentWord, parent);
                 q.Enqueue(currentWord);
                 dictionaryWords.Remove(currentWord);
                 firstWord = false;
             }
 
-            // return the endword once found
+            // loop until the currentWord matches the endWord
             while (currentWord != endWord)
             {
                 // keep searching while there are still words in the queue and we haven't already found the endWord
@@ -75,18 +73,11 @@
                 {
                     return null;
                 }
-
-                //string value;
-                //if (visitedWordsDictionary.TryGetValue(q.Peek(), out value))
-                //{
-                //    parent = value;
-                //}
-
-                //return WordSearch(parent, q.Peek(), endWord, dictionaryWords);
+                
                 currentWord = q.Peek();
             }
                        
-
+            // calculate the route from the endWord to the startWord
             return this.CalculatePathFromDictionary(currentWord, visitedWordsDictionary);
         }
 
@@ -94,9 +85,10 @@
         {
             var nextWordsList = new List<string>();
 
+            // check each word in the dictionaryList to see if it is one char different to the current word
             foreach (string word in dictionaryWords)
             {
-                if (!word.Equals(currentWord) /*&& !visitedWordsDictionary.ContainsKey(word) && !q.Contains(word)*/)
+                if (!word.Equals(currentWord))
                 {
                     var neighbouringWord = this.HasOneCharacterDifferent(currentWord, word);
 
@@ -121,7 +113,7 @@
                     return false;
                 }
 
-                if (!(word1.Substring(i, 1)).Equals(word2.Substring(i, 1)))
+                if (!(word1.ToLower().Substring(i, 1)).Equals(word2.ToLower().Substring(i, 1)))
                 {
                     count++;
                 }
@@ -134,25 +126,6 @@
 
             return false;
         }
-
-        //public List<string> FindNextWords(string currentWord, List<string> dictionaryWords, Dictionary<string, string> visitedWordsDictionary, Queue<string> q)
-        //{
-        //    var nextWordsList = new List<string>();
-
-        //    for (var wordIndex = 0; wordIndex < currentWord.Length; wordIndex++)
-        //    {
-        //        for (var letter = 'a'; letter <= 'z'; letter++)
-        //        {
-        //            var nextWord = currentWord.Substring(0, wordIndex) + (char)letter + currentWord.Substring(wordIndex + 1, (currentWord.Length) - (wordIndex + 1));
-        //            if (dictionaryWords.Contains(nextWord) && (!nextWord.Equals(currentWord)) && (!visitedWordsDictionary.ContainsKey(nextWord)) && (!q.Contains(nextWord)))
-        //            {
-        //                nextWordsList.Add(nextWord);
-        //            }
-        //        }
-        //    }
-
-        //    return nextWordsList;
-        //}
 
         public List<string> CalculatePathFromDictionary(string currentWord, Dictionary<string, string> visitedWordsDictionary)
         {
