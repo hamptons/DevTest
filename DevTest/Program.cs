@@ -58,7 +58,7 @@
                 var da = new DictionaryAnalyser();
 
                 // get the path
-                var result = da.Analyse(DictionaryFile, startWord.ToLower(), endWord.ToLower(), ResultFile);
+                var result = da.Analyse(DictionaryFile, startWord, endWord, ResultFile);
 
                 if (result != null)
                 {
