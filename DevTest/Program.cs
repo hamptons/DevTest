@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Diagnostics;
 
     class Program
     {
@@ -9,6 +10,7 @@
         static void Main(string[] args)
         {
             var cont = true;
+            Stopwatch sw = new Stopwatch();
 
             while (cont)
             {
@@ -43,6 +45,8 @@
                     endWord = Console.ReadLine();
                 }
 
+                sw.Start();
+
                 Console.WriteLine(string.Empty);
                 Console.WriteLine(startWord + " ---> " + endWord);
                 Console.WriteLine(string.Empty);
@@ -59,6 +63,8 @@
 
                 // get the path
                 var result = da.Analyse(DictionaryFile, startWord, endWord, ResultFile);
+
+                sw.Stop();
 
                 if (result != null)
                 {
@@ -87,6 +93,10 @@
                     }
 
                     Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(string.Empty);
+
+                    TimeSpan ts = sw.Elapsed;
+                    Console.WriteLine($"Elapsed time = {ts.Seconds}.{ts.Milliseconds} seconds");
                     Console.WriteLine(string.Empty);
                     Console.WriteLine("See " + ResultFile + " for results.");
                 }
